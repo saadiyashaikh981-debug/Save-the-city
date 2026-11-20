@@ -1,0 +1,1146 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCHOOLSHIELD | Save the School</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg: #07111f;
+    --panel: #101f32;
+    --panel2: #142940;
+    --cyan: #00e5ff;
+    --green: #00ff9d;
+    --red: #ff496c;
+    --yellow: #ffc857;
+    --text: #eaf5ff;
+    --muted: #8ba3bd;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 15% 15%, #12334a 0, transparent 35%),
+        radial-gradient(circle at 85% 80%, #102c40 0, transparent 35%),
+        var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(0,229,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,.035) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+button, input {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.screen {
+    display: none;
+    min-height: 100vh;
+    padding: 35px 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.screen.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1050px;
+}
+
+.logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 17px;
+    letter-spacing: 4px;
+    color: var(--cyan);
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.logo span {
+    color: white;
+}
+
+.tag {
+    color: var(--green);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(34px, 7vw, 68px);
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: 15px;
+}
+
+h1 span {
+    color: var(--cyan);
+    text-shadow: 0 0 25px rgba(0,229,255,.35);
+}
+
+.subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 19px;
+    margin-bottom: 35px;
+}
+
+.panel {
+    background: rgba(16,31,50,.94);
+    border: 1px solid rgba(0,229,255,.2);
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 0 35px rgba(0,0,0,.2);
+}
+
+.briefing {
+    max-width: 720px;
+    margin: auto;
+}
+
+.briefing h2 {
+    color: var(--cyan);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 17px;
+    margin-bottom: 18px;
+}
+
+.briefing p {
+    color: #c3d4e5;
+    font-size: 18px;
+    line-height: 1.7;
+    margin-bottom: 13px;
+}
+
+.warning {
+    border-left: 3px solid var(--red);
+    background: rgba(255,73,108,.08);
+    padding: 14px 17px;
+    margin: 20px 0;
+    color: #ffc3ce;
+    font-size: 17px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 25px 0;
+}
+
+.info-box {
+    background: var(--panel2);
+    border: 1px solid rgba(0,229,255,.13);
+    padding: 17px 10px;
+    border-radius: 9px;
+    text-align: center;
+}
+
+.info-box strong {
+    display: block;
+    color: var(--cyan);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 19px;
+    margin-bottom: 5px;
+}
+
+.info-box small {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.primary-btn {
+    background: var(--cyan);
+    color: #06121e;
+    border: none;
+    padding: 14px 30px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    border-radius: 6px;
+    transition: .2s;
+}
+
+.primary-btn:hover {
+    background: white;
+    box-shadow: 0 0 25px rgba(0,229,255,.4);
+    transform: translateY(-2px);
+}
+
+.secondary-btn {
+    background: transparent;
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+.center {
+    text-align: center;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.topbar .logo {
+    margin: 0;
+}
+
+.timer {
+    background: rgba(255,73,108,.1);
+    border: 1px solid rgba(255,73,108,.4);
+    color: var(--red);
+    padding: 10px 17px;
+    border-radius: 7px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+}
+
+.dashboard-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(22px, 4vw, 34px);
+    margin-bottom: 8px;
+}
+
+.dashboard-desc {
+    color: var(--muted);
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+
+.progress-track {
+    height: 7px;
+    background: #1d3045;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--cyan), var(--green));
+    transition: .4s;
+}
+
+.round-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 17px;
+}
+
+.round-card {
+    background: var(--panel);
+    border: 1px solid #233b53;
+    border-radius: 12px;
+    padding: 23px;
+    transition: .2s;
+}
+
+.round-card.unlocked {
+    border-color: rgba(0,229,255,.6);
+    cursor: pointer;
+}
+
+.round-card.unlocked:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgba(0,229,255,.12);
+}
+
+.round-card.completed {
+    border-color: var(--green);
+    background: rgba(0,255,157,.06);
+}
+
+.round-card.locked {
+    opacity: .48;
+}
+
+.round-number {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--cyan);
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.round-card h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.round-card p {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.status {
+    display: inline-block;
+    margin-top: 15px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--yellow);
+}
+
+.completed .status {
+    color: var(--green);
+}
+
+.dashboard-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    color: var(--muted);
+    font-size: 15px;
+}
+
+.challenge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.challenge-header .logo {
+    margin: 0;
+}
+
+.round-label {
+    color: var(--cyan);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.challenge-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(23px, 5vw, 35px);
+    margin-bottom: 10px;
+}
+
+.challenge-description {
+    color: var(--muted);
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+
+.task-card {
+    background: #0b1929;
+    border: 1px solid rgba(0,229,255,.2);
+    border-radius: 10px;
+    padding: 23px;
+    margin-bottom: 20px;
+}
+
+.task-number {
+    color: var(--green);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin-bottom: 13px;
+}
+
+.task-card h3 {
+    font-size: 21px;
+    margin-bottom: 13px;
+}
+
+.task-card p {
+    color: #bdcfe0;
+    font-size: 17px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 15px;
+}
+
+.data-table th,
+.data-table td {
+    padding: 11px;
+    text-align: left;
+    border: 1px solid #29435c;
+}
+
+.data-table th {
+    background: #17324a;
+    color: var(--cyan);
+}
+
+.data-table td {
+    color: #d4e2ef;
+}
+
+.code-block {
+    background: #030b13;
+    border: 1px solid #20384d;
+    border-radius: 7px;
+    padding: 16px;
+    margin: 15px 0;
+    color: var(--green);
+    font-family: monospace;
+    font-size: 15px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+.answer-area {
+    margin-top: 25px;
+}
+
+.answer-area label {
+    display: block;
+    color: var(--cyan);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.answer-area input {
+    width: 100%;
+    background: #071421;
+    border: 1px solid #35516b;
+    color: white;
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 6px;
+    outline: none;
+    margin-bottom: 15px;
+}
+
+.answer-area input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 12px rgba(0,229,255,.1);
+}
+
+.feedback {
+    min-height: 25px;
+    margin-top: 14px;
+    font-size: 17px;
+}
+
+.feedback.error {
+    color: var(--red);
+}
+
+.feedback.success {
+    color: var(--green);
+}
+
+.challenge-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.result-icon {
+    font-size: 65px;
+    margin-bottom: 20px;
+}
+
+.result-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(28px, 6vw, 48px);
+    margin-bottom: 15px;
+}
+
+.result-text {
+    color: var(--muted);
+    font-size: 19px;
+    line-height: 1.6;
+    max-width: 650px;
+    margin: 0 auto 30px;
+}
+
+.home-button {
+    display: inline-block;
+    text-decoration: none;
+    background: var(--cyan);
+    color: #06121e;
+    padding: 14px 30px;
+    border-radius: 6px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    transition: .2s;
+}
+
+.home-button:hover {
+    background: white;
+    box-shadow: 0 0 25px rgba(0,229,255,.4);
+}
+
+@media(max-width: 650px) {
+    .round-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+
+    .screen {
+        padding: 22px 14px;
+    }
+
+    .dashboard-bottom {
+        align-items: flex-start;
+        gap: 10px;
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<section id="homeScreen" class="screen active">
+    <div class="container">
+        <div class="logo">CYBER<span>DEFENCE</span> PROTOCOL</div>
+        <div class="tag">EMERGENCY SCHOOL RESPONSE SYSTEM</div>
+        <h1>SCHOOL<span>SHIELD</span></h1>
+        <p class="subtitle">One School. Five Systems. One Mission.</p>
+
+        <div class="panel briefing">
+            <h2>⚠ EMERGENCY ALERT: SCHOOL SYSTEMS COMPROMISED</h2>
+
+            <p>
+                Welcome, Agent. The school has suffered a major digital attack.
+                Its attendance database has been manipulated, student information
+                has been exposed, the network is compromised and essential
+                communication systems are offline.
+            </p>
+
+            <p>
+                The school administration has activated the emergency
+                protection protocol. You have been assigned to restore the
+                systems before the school day begins.
+            </p>
+
+            <div class="warning">
+                WARNING: If the five security systems are not restored within
+                20 minutes, the school will remain locked down digitally.
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <strong>05</strong>
+                    <small>Security Rounds</small>
+                </div>
+                <div class="info-box">
+                    <strong>20:00</strong>
+                    <small>Time Limit</small>
+                </div>
+                <div class="info-box">
+                    <strong>01</strong>
+                    <small>Final Mission</small>
+                </div>
+            </div>
+
+            <p>
+                Analyse the evidence, solve the technical challenges and
+                restore the school's digital infrastructure.
+            </p>
+
+            <div class="center">
+                <button class="primary-btn" onclick="startGame()">START MISSION →</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="dashboardScreen" class="screen">
+    <div class="container">
+        <div class="topbar">
+            <div class="logo">SCHOOL<span>SHIELD</span></div>
+            <div class="timer" id="dashboardTimer">20:00</div>
+        </div>
+
+        <div class="tag" style="text-align:left">MISSION CONTROL / LIVE STATUS</div>
+        <h2 class="dashboard-title">Restore School Infrastructure</h2>
+        <p class="dashboard-desc">
+            Complete each security operation to unlock the next system.
+        </p>
+
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="round-grid" id="roundGrid"></div>
+
+        <div class="dashboard-bottom">
+            <span id="progressText">0 / 5 SYSTEMS RESTORED</span>
+            <span>SECURITY PROTOCOL: ACTIVE</span>
+        </div>
+    </div>
+</section>
+
+<section id="challengeScreen" class="screen">
+    <div class="container">
+        <div class="challenge-header">
+            <div class="logo">SCHOOL<span>SHIELD</span></div>
+            <div class="timer" id="challengeTimer">20:00</div>
+        </div>
+
+        <div class="panel">
+            <div class="round-label" id="roundLabel">ROUND 01</div>
+            <h2 class="challenge-title" id="challengeTitle"></h2>
+            <p class="challenge-description" id="challengeDescription"></p>
+
+            <div id="taskContainer"></div>
+
+            <div class="answer-area">
+                <label id="answerLabel">ENTER YOUR RESPONSE</label>
+                <input type="text" id="answerInput"
+                    placeholder="Enter your answer..." autocomplete="off">
+                <button class="primary-btn" id="submitButton" onclick="submitAnswer()">
+                    SUBMIT RESPONSE →
+                </button>
+                <div class="feedback" id="feedback"></div>
+            </div>
+
+            <div class="challenge-actions">
+                <button class="secondary-btn" onclick="backToDashboard()">
+                    ← DASHBOARD
+                </button>
+                <span style="color:var(--muted);font-size:14px" id="taskProgress"></span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="successScreen" class="screen">
+    <div class="container center">
+        <div class="logo">SCHOOL<span>SHIELD</span></div>
+        <div class="result-icon">🛡️</div>
+        <div class="tag">MISSION ACCOMPLISHED</div>
+        <h1 class="result-title">SCHOOL <span>SAVED!</span></h1>
+
+        <p class="result-text">
+            All five security systems have been successfully restored.
+            Student records are protected, the network is secured and
+            school operations are back online.
+            <br><br>
+            The administration has confirmed that the school is safe to resume
+            its digital operations. Excellent work, Agent.
+        </p>
+
+        <a class="home-button" href="home.html">HOME PAGE</a>
+    </div>
+</section>
+
+<section id="timeUpScreen" class="screen">
+    <div class="container center">
+        <div class="logo">SCHOOL<span>SHIELD</span></div>
+        <div class="result-icon">⚠️</div>
+        <div class="tag" style="color:var(--red)">MISSION FAILED</div>
+        <h1 class="result-title">TIME <span style="color:var(--red)">EXPIRED</span></h1>
+
+        <p class="result-text">
+            The emergency response timer has reached zero.
+            The school systems could not be fully restored in time.
+            The security team requires another attempt.
+        </p>
+
+        <button class="primary-btn" onclick="location.reload()">RESTART MISSION</button>
+    </div>
+</section>
+
+<script>
+const rounds = [
+    {
+        title: "Attendance Database",
+        description: "Recover the student attendance system and identify manipulated records.",
+        tasks: [
+            {
+                title: "Identify the Fake Attendance Entry",
+                content: `
+                    <p>The school's attendance system has detected a suspicious entry.
+                    Students can only be marked present during school hours (7:00 AM – 2:00 PM).</p>
+
+                    <table class="data-table">
+                        <tr><th>Student ID</th><th>Name</th><th>Class</th><th>Login Time</th><th>Status</th></tr>
+                        <tr><td>STU-101</td><td>Rahul</td><td>10A</td><td>07:45 AM</td><td>Present</td></tr>
+                        <tr><td>STU-204</td><td>Priya</td><td>10B</td><td>08:10 AM</td><td>Present</td></tr>
+                        <tr><td>STU-309</td><td>Unknown User</td><td>10A</td><td>02:47 AM</td><td>Present</td></tr>
+                        <tr><td>STU-412</td><td>Neha</td><td>10C</td><td>08:20 AM</td><td>Present</td></tr>
+                    </table>
+
+                    <p>Identify the student ID with the suspicious attendance entry.</p>
+                `,
+                answer: "STU-309",
+                placeholder: "Enter suspicious student ID"
+            },
+            {
+                title: "Repair the Attendance Database",
+                content: `
+                    <p>The administrator needs to find students from Class 10A
+                    who were marked ABSENT.</p>
+
+                    <div class="code-block">SELECT student_id
+FROM attendance
+WHERE class = '10A'
+AND status = 'ABSENT';</div>
+
+                    <table class="data-table">
+                        <tr><th>Student ID</th><th>Class</th><th>Status</th></tr>
+                        <tr><td>STU-101</td><td>10A</td><td>PRESENT</td></tr>
+                        <tr><td>STU-208</td><td>10A</td><td>ABSENT</td></tr>
+                        <tr><td>STU-309</td><td>10B</td><td>ABSENT</td></tr>
+                        <tr><td>STU-410</td><td>10A</td><td>PRESENT</td></tr>
+                    </table>
+
+                    <p>Which student ID will the SQL query return?</p>
+                `,
+                answer: "STU-208",
+                placeholder: "Enter student ID"
+            }
+        ]
+    },
+
+    {
+        title: "Examination & Marks System",
+        description: "Recover examination records and correct the school's result database.",
+        tasks: [
+            {
+                title: "Calculate the Missing Result",
+                content: `
+                    <p>The examination server has lost a student's percentage.
+                    The following marks were recovered from the backup.</p>
+
+                    <table class="data-table">
+                        <tr><th>Subject</th><th>Marks Obtained</th><th>Maximum Marks</th></tr>
+                        <tr><td>English</td><td>78</td><td>100</td></tr>
+                        <tr><td>Mathematics</td><td>84</td><td>100</td></tr>
+                        <tr><td>Science</td><td>69</td><td>100</td></tr>
+                        <tr><td>Computer</td><td>89</td><td>100</td></tr>
+                        <tr><td>History</td><td>80</td><td>100</td></tr>
+                    </table>
+
+                    <p>Calculate the student's overall percentage.</p>
+                    <div class="code-block">Percentage = (Total Marks Obtained / Total Maximum Marks) × 100</div>
+                    <p>Enter the percentage without the % symbol.</p>
+                `,
+                answer: "80",
+                placeholder: "Enter percentage"
+            },
+            {
+                title: "Identify the Incorrect Grade",
+                content: `
+                    <p>The school's result management system follows this grading policy:</p>
+
+                    <table class="data-table">
+                        <tr><th>Percentage</th><th>Grade</th></tr>
+                        <tr><td>90 – 100</td><td>A+</td></tr>
+                        <tr><td>80 – 89</td><td>A</td></tr>
+                        <tr><td>70 – 79</td><td>B</td></tr>
+                        <tr><td>60 – 69</td><td>C</td></tr>
+                        <tr><td>Below 60</td><td>F</td></tr>
+                    </table>
+
+                    <p>A student has scored 76%. The database mistakenly shows grade A.</p>
+                    <p>Enter the correct grade.</p>
+                `,
+                answer: "B",
+                placeholder: "Enter correct grade"
+            }
+        ]
+    },
+
+    {
+        title: "Library & Computer Lab Security",
+        description: "Secure the school's digital library and computer laboratory.",
+        tasks: [
+            {
+                title: "Decode the Library Backup",
+                content: `
+                    <p>The library database backup has been converted into binary.
+                    Decode the following 8-bit ASCII values to recover the missing word.</p>
+
+                    <div class="code-block">01010011 01000011 01001000
+01001111 01001111 01001100</div>
+
+                    <p>Convert the binary values into readable text.</p>
+                `,
+                answer: "SCHOOL",
+                placeholder: "Enter decoded word"
+            },
+            {
+                title: "Secure the School Website",
+                content: `
+                    <p>The school website contains student results, admission forms
+                    and parent login details. The IT administrator must enable
+                    secure HTTPS communication.</p>
+
+                    <p>Identify the standard port used by HTTPS.</p>
+
+                    <div class="code-block">A. 21
+B. 80
+C. 443
+D. 25</div>
+
+                    <p>Enter the port number only.</p>
+                `,
+                answer: "443",
+                placeholder: "Enter port number"
+            }
+        ]
+    },
+
+    {
+        title: "Timetable & School Transport",
+        description: "Restore the timetable system and prevent transport scheduling errors.",
+        tasks: [
+            {
+                title: "Detect the Teacher Timetable Conflict",
+                content: `
+                    <p>The timetable software has reported a scheduling conflict.
+                    A teacher cannot conduct two classes at the same time.</p>
+
+                    <table class="data-table">
+                        <tr><th>Time</th><th>Class</th><th>Teacher</th><th>Subject</th></tr>
+                        <tr><td>09:00 – 10:00</td><td>8A</td><td>Ms. Rao</td><td>Science</td></tr>
+                        <tr><td>09:00 – 10:00</td><td>9B</td><td>Mr. Shah</td><td>Maths</td></tr>
+                        <tr><td>10:00 – 11:00</td><td>8B</td><td>Ms. Rao</td><td>English</td></tr>
+                        <tr><td>10:00 – 11:00</td><td>9A</td><td>Mr. Shah</td><td>History</td></tr>
+                        <tr><td>11:00 – 12:00</td><td>7A</td><td>Ms. Rao</td><td>Computer</td></tr>
+                    </table>
+
+                    <p>Which teacher has been assigned to two different classes
+                    at the same time?</p>
+                `,
+                answer: "MS. RAO",
+                placeholder: "Enter teacher name"
+            },
+            {
+                title: "Repair the School Bus Access Logic",
+                content: `
+                    <p>The school transport system should allow a student to board
+                    the bus only when BOTH conditions are satisfied:</p>
+
+                    <div class="code-block">Condition 1: Student attendance is confirmed
+Condition 2: Guardian permission is available</div>
+
+                    <p>Complete the missing logical operator:</p>
+
+                    <div class="code-block">IF attendance_confirmed ____ guardian_permission
+THEN allow_bus_access</div>
+
+                    <p>Enter the correct logical operator.</p>
+                `,
+                answer: "AND",
+                placeholder: "Enter logical operator"
+            }
+        ]
+    },
+
+    {
+        title: "Final School Recovery",
+        description: "Complete the final verification and bring the school systems back online.",
+        tasks: [
+            {
+                title: "The Final Backup Verification",
+                content: `
+                    <p>The school's systems have been recovered.
+                    The final backup server has generated four recovery records.</p>
+
+                    <table class="data-table">
+                        <tr><th>Backup ID</th><th>Recovery Fragment</th><th>Status</th></tr>
+                        <tr><td>BACKUP-01</td><td>4821</td><td>FAILED</td></tr>
+                        <tr><td>BACKUP-02</td><td>7352</td><td>FAILED</td></tr>
+                        <tr><td>BACKUP-03</td><td>6245</td><td>VERIFIED</td></tr>
+                        <tr><td>BACKUP-04</td><td>9125</td><td>FAILED</td></tr>
+                    </table>
+
+                    <p>Only the VERIFIED backup contains the correct recovery fragment.</p>
+                    <p>Take the first two digits and multiply them by the last two digits.</p>
+
+                    <div class="code-block">Example:
+1234 → 12 × 34 = 408</div>
+
+                    <p>Enter the final numerical verification code.</p>
+                `,
+                answer: "2790",
+                placeholder: "Enter final verification code"
+            }
+        ]
+    }
+];
+
+let completed = [];
+let stageProgress = [0, 0, 0, 0, 0];
+let current = 0;
+let currentTask = 0;
+let seconds = 1200;
+let timerInterval = null;
+let gameStarted = false;
+let answerLocked = false;
+let timeExpired = false;
+
+function show(id) {
+    document.querySelectorAll(".screen").forEach(screen => {
+        screen.classList.remove("active");
+    });
+
+    document.getElementById(id).classList.add("active");
+}
+
+function startGame() {
+    if (gameStarted) return;
+
+    gameStarted = true;
+    show("dashboardScreen");
+    renderDashboard();
+
+    timerInterval = setInterval(() => {
+        if (timeExpired) return;
+
+        seconds--;
+        updateTimer();
+
+        if (seconds <= 0) {
+            clearInterval(timerInterval);
+            timeExpired = true;
+            show("timeUpScreen");
+        }
+    }, 1000);
+}
+
+function updateTimer() {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    const timeString =
+        String(minutes).padStart(2, "0") + ":" +
+        String(remainingSeconds).padStart(2, "0");
+
+    document.getElementById("dashboardTimer").textContent = timeString;
+    document.getElementById("challengeTimer").textContent = timeString;
+}
+
+function renderDashboard() {
+    const grid = document.getElementById("roundGrid");
+    grid.innerHTML = "";
+
+    rounds.forEach((round, index) => {
+        const isCompleted = completed.includes(index);
+        const isUnlocked = index === 0 || completed.includes(index - 1);
+
+        let status = "LOCKED";
+        let cardClass = "locked";
+
+        if (isCompleted) {
+            status = "COMPLETED ✓";
+            cardClass = "completed";
+        } else if (isUnlocked) {
+            status = "ACCESS AVAILABLE →";
+            cardClass = "unlocked";
+        }
+
+        const card = document.createElement("div");
+        card.className = `round-card ${cardClass}`;
+
+        card.innerHTML = `
+            <div class="round-number">OPERATION 0${index + 1}</div>
+            <h3>${round.title}</h3>
+            <p>${round.description}</p>
+            <div class="status">${status}</div>
+        `;
+
+        if (isUnlocked && !isCompleted) {
+            card.onclick = () => openRound(index);
+        }
+
+        grid.appendChild(card);
+    });
+
+    const progress = completed.length * 20;
+
+    document.getElementById("progressFill").style.width = progress + "%";
+    document.getElementById("progressText").textContent =
+        `${completed.length} / 5 SYSTEMS RESTORED`;
+}
+
+function openRound(index) {
+    if (completed.includes(index)) return;
+    if (index > 0 && !completed.includes(index - 1)) return;
+
+    current = index;
+    currentTask = stageProgress[index];
+
+    show("challengeScreen");
+    renderTask();
+}
+
+function renderTask() {
+    const round = rounds[current];
+    const task = round.tasks[currentTask];
+
+    answerLocked = false;
+
+    document.getElementById("roundLabel").textContent =
+        `OPERATION 0${current + 1} / TASK 0${currentTask + 1}`;
+
+    document.getElementById("challengeTitle").textContent = round.title;
+    document.getElementById("challengeDescription").textContent = round.description;
+
+    document.getElementById("taskContainer").innerHTML = `
+        <div class="task-card">
+            <div class="task-number">CHALLENGE ${currentTask + 1}</div>
+            <h3>${task.title}</h3>
+            ${task.content}
+        </div>
+    `;
+
+    document.getElementById("answerInput").value = "";
+    document.getElementById("answerInput").placeholder = task.placeholder;
+    document.getElementById("feedback").textContent = "";
+    document.getElementById("feedback").className = "feedback";
+    document.getElementById("submitButton").disabled = false;
+    document.getElementById("submitButton").style.opacity = "1";
+
+    document.getElementById("taskProgress").textContent =
+        `TASK ${currentTask + 1} OF ${round.tasks.length}`;
+
+    document.getElementById("answerInput").focus();
+}
+
+function submitAnswer() {
+    if (answerLocked || timeExpired) return;
+
+    const input = document.getElementById("answerInput");
+    const feedback = document.getElementById("feedback");
+
+    const userAnswer = input.value.trim().toUpperCase();
+    const correctAnswer = rounds[current].tasks[currentTask].answer.toUpperCase();
+
+    if (!userAnswer) {
+        feedback.textContent = "Enter a response before submitting.";
+        feedback.className = "feedback error";
+        return;
+    }
+
+    if (userAnswer === correctAnswer) {
+        answerLocked = true;
+
+        feedback.textContent = "Verification successful. System access restored.";
+        feedback.className = "feedback success";
+
+        document.getElementById("submitButton").disabled = true;
+        document.getElementById("submitButton").style.opacity = ".5";
+
+        setTimeout(() => {
+            moveToNextTask();
+        }, 1100);
+
+    } else {
+        feedback.textContent = "Verification failed. Analyse the evidence and try again.";
+        feedback.className = "feedback error";
+    }
+}
+
+function moveToNextTask() {
+    const round = rounds[current];
+
+    if (currentTask < round.tasks.length - 1) {
+        currentTask++;
+        stageProgress[current] = currentTask;
+        renderTask();
+        return;
+    }
+
+    completed.push(current);
+    stageProgress[current] = round.tasks.length;
+
+    if (completed.length === rounds.length) {
+        clearInterval(timerInterval);
+        show("successScreen");
+    } else {
+        show("dashboardScreen");
+        renderDashboard();
+    }
+}
+
+function backToDashboard() {
+    if (timeExpired) return;
+
+    show("dashboardScreen");
+    renderDashboard();
+}
+
+document.getElementById("answerInput").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        submitAnswer();
+    }
+});
+
+updateTimer();
+</script>
+
+</body>
+</html>

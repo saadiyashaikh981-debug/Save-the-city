@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BANKSHIELD | Save The Bank</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Arial,sans-serif;
+  background:#071321;color:white;min-height:100vh;
+}
+header{
+  padding:20px 7%;display:flex;justify-content:space-between;
+  align-items:center;border-bottom:1px solid #24384c;
+}
+.logo{font-size:23px;font-weight:bold;color:#39d5ff}
+.logo span{color:white}
+.timer{color:#ffc857;font-weight:bold}
+main{max-width:1050px;margin:40px auto;padding:20px}
+.panel{
+  background:#10243a;border:1px solid #25425d;
+  border-radius:15px;padding:30px;margin-bottom:24px;
+}
+h1{font-size:36px;margin-bottom:15px}
+h2{color:#39d5ff;margin-bottom:15px}
+h3{margin-bottom:9px}
+p{line-height:1.7;color:#c5d5e4}
+button{
+  background:#08b9e9;color:#041421;border:0;
+  padding:13px 22px;border-radius:7px;
+  font-weight:bold;cursor:pointer;margin-top:17px;
+}
+button:hover{background:#65dcff}
+button:disabled{opacity:.3;cursor:not-allowed}
+.home-button{
+  display:inline-block;background:#08b9e9;color:#041421;
+  padding:13px 22px;border-radius:7px;font-weight:bold;
+  text-decoration:none;margin-top:17px;
+}
+.home-button:hover{background:#65dcff}
+input[type=text]{
+  width:100%;padding:15px;margin-top:15px;
+  background:#071321;border:1px solid #42617c;
+  border-radius:7px;color:white;font-size:16px;
+}
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));
+  gap:15px;margin-top:25px;
+}
+.round{
+  background:#0b1b2c;border:1px solid #34506a;
+  padding:20px;border-radius:12px;
+}
+.locked{opacity:.4}
+.active{border:1px solid #08b9e9}
+.completed{border:1px solid #31d69b}
+.tag{font-size:12px;color:#31d69b;margin-bottom:10px}
+.question{
+  background:#071a2b;padding:22px;border-radius:10px;
+  margin:22px 0;border-left:4px solid #08b9e9;
+  overflow-x:auto;
+}
+table{width:100%;border-collapse:collapse;margin:15px 0;min-width:420px}
+td,th{padding:12px;border:1px solid #36516b;text-align:left}
+th{color:#39d5ff}
+code,.code{
+  display:block;background:#030d18;color:#8ef4ce;
+  padding:17px;border-radius:8px;margin:15px 0;
+  white-space:pre-wrap;line-height:1.8;
+  font-family:Consolas,monospace;overflow-wrap:anywhere;
+}
+#progress{
+  height:8px;background:#24384c;border-radius:10px;
+  margin-top:20px;overflow:hidden;
+}
+#bar{height:100%;width:0%;background:#31d69b;transition:width .25s}
+#feedback{margin-top:18px;color:#ffc857;min-height:24px}
+.hidden{display:none!important}
+.small{font-size:13px;color:#8fa9bf}
+.stage{
+  display:flex;justify-content:space-between;
+  gap:10px;margin-top:15px;flex-wrap:wrap;
+}
+.stage span{
+  background:#071a2b;padding:9px 13px;
+  border-radius:6px;font-size:13px;
+}
+footer{text-align:center;color:#71889d;padding:30px}
+.difficulty{
+  display:inline-block;background:#173b52;color:#7fe5ff;
+  border:1px solid #23617d;border-radius:20px;
+  padding:7px 12px;font-size:12px;font-weight:bold;
+  margin:14px 0 18px;letter-spacing:.5px;
+}
+.note{
+  background:#0a1c2d;border:1px solid #28445e;
+  border-radius:8px;padding:13px;margin-top:14px;
+  color:#a9bfd1;font-size:13px;line-height:1.6;
+}
+@media(max-width:600px){
+  header{padding:16px 5%}
+  main{margin:20px auto;padding:12px}
+  .panel{padding:20px}
+  h1{font-size:29px}
+  .question{padding:15px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🛡 BANK<span>SHIELD</span></div>
+  <div class="timer">⏱ <span id="time">20:00</span></div>
+</header>
+
+<main>
+  <!-- HOME PAGE -->
+  <section id="home" class="panel">
+    <p style="color:#39d5ff">CYBER SECURITY EMERGENCY • MISSION 001</p>
+    <h1>SAVE THE BANK.</h1>
+    <h2>ZERO HAS BREACHED THE SYSTEM.</h2>
+    <div class="difficulty">DIFFICULTY: INTERMEDIATE–ADVANCED</div>
+    <p>
+      A hacker named ZERO has attacked BankShield. Customer records have been
+      manipulated, suspicious transfers are moving through the payment gateway,
+      and the ATM network is failing.
+      <br><br>
+      You are the bank's last line of defence. Complete five security missions
+      to investigate the attack, stop the fraudulent activity and restore the
+      bank's systems.
+      <br><br>
+      <b>Warning:</b> Each mission requires careful analysis. Read every rule,
+      inspect the evidence and enter the exact response.
+    </p>
+    <button onclick="startGame()">START MISSION →</button>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="hidden">
+    <div class="panel">
+      <h1>MISSION CONTROL</h1>
+      <p>Restore all five security layers to save the bank.</p>
+      <div id="progress"><div id="bar"></div></div>
+      <p id="progressText" style="margin-top:10px">0 / 5 missions completed</p>
+    </div>
+    <div class="grid" id="roundGrid"></div>
+  </section>
+
+  <!-- CHALLENGE -->
+  <section id="challenge" class="panel hidden">
+    <p id="roundNumber" style="color:#39d5ff"></p>
+    <h1 id="roundTitle"></h1>
+    <p id="roundDescription"></p>
+    <div class="stage">
+      <span id="stageNumber">CHALLENGE 1</span>
+      <span id="stageProgress">1 / 2</span>
+    </div>
+    <div class="question" id="question"></div>
+    <div id="answerArea"></div>
+    <button id="submitButton" onclick="submitAnswer()">SUBMIT RESPONSE</button>
+    <p id="feedback" aria-live="polite"></p>
+    <button onclick="backToDashboard()" style="background:#36516b;color:white">
+      ← MISSION DASHBOARD
+    </button>
+  </section>
+
+  <!-- FINAL WIN -->
+  <section id="win" class="panel hidden">
+    <h1 style="color:#31d69b">🏆 BANK SAVED!</h1>
+    <h2>ZERO HAS BEEN DEFEATED.</h2>
+    <p>
+      All five security layers have been restored.
+      Customer information is protected.
+      Suspicious transactions have been identified.
+      The firewall and ATM systems are secure.
+      <br><br>
+      Your team successfully completed the BankShield emergency response.
+    </p>
+    <h1 style="margin-top:25px">MISSION SUCCESSFUL!</h1>
+    <p id="finalTime"></p>
+    <!-- Change this href to any page you want, e.g. home.html or https://yourwebsite.com -->
+    <a class="home-button" href="city2.html">HOME PAGE</a>
+  </section>
+
+  <section id="timeUp" class="panel hidden">
+    <h1 style="color:#ffc857">⏱ TIME EXPIRED</h1>
+    <h2>THE BANK IS STILL UNDER ATTACK.</h2>
+    <p>The mission timer has reached zero. Restart the event to try again.</p>
+    <button onclick="location.reload()">RESTART MISSION</button>
+  </section>
+</main>
+
+<footer>BANKSHIELD SECURITY OPERATIONS • PROTECT • DETECT • RESTORE</footer>
+
+<script>
+/* =========================
+   ROUND QUESTIONS
+========================= */
+
+const rounds = [
+  {
+    title:"Database Detective",
+    desc:"ROUND 01 • CUSTOMER DATABASE",
+    story:"ZERO has altered customer records. Apply multiple database conditions and identify the account that needs immediate investigation.",
+    tasks:[
+      {
+        question:`
+          <h2>CHALLENGE 1: MULTI-FACTOR RECORD INVESTIGATION</h2>
+          <p>The security team has flagged several customer accounts. The trusted internal IP address is
+          <b>10.0.0.8</b>.</p>
+          <table>
+            <tr><th>Account ID</th><th>Status</th><th>Failed Logins</th><th>Source IP</th></tr>
+            <tr><td>A-204</td><td>ACTIVE</td><td>4</td><td>103.21.44.8</td></tr>
+            <tr><td>A-309</td><td>ACTIVE</td><td>6</td><td>185.220.101.4</td></tr>
+            <tr><td>A-312</td><td>FROZEN</td><td>9</td><td>185.220.101.4</td></tr>
+            <tr><td>A-318</td><td>ACTIVE</td><td>5</td><td>10.0.0.8</td></tr>
+            <tr><td>A-327</td><td>ACTIVE</td><td>1</td><td>185.220.101.4</td></tr>
+          </table>
+          <p><b>Investigation rules:</b></p>
+          <ul>
+            <li>Account status must be ACTIVE.</li>
+            <li>Failed login attempts must be 5 or more.</li>
+            <li>The source IP must NOT be the trusted internal IP.</li>
+          </ul>
+          <p>Only one account satisfies all three conditions. Enter its complete Account ID.</p>
+        `,
+        answer:"A-309",
+        placeholder:"Enter complete account ID"
+      },
+      {
+        question:`
+          <h2>CHALLENGE 2: EXECUTE THE SQL FILTER</h2>
+          <p>The following query is being used to detect customers with repeated successful high-value transactions.</p>
+          <div class="code">SELECT customer_id
+FROM transactions
+WHERE status = 'SUCCESS'
+GROUP BY customer_id
+HAVING COUNT(*) >= 3 AND SUM(amount) > 50000;</div>
+          <table>
+            <tr><th>Customer</th><th>Status</th><th>Amount (₹)</th></tr>
+            <tr><td>C104</td><td>SUCCESS</td><td>18,000</td></tr>
+            <tr><td>C104</td><td>SUCCESS</td><td>17,500</td></tr>
+            <tr><td>C104</td><td>FAILED</td><td>90,000</td></tr>
+            <tr><td>C208</td><td>SUCCESS</td><td>22,000</td></tr>
+            <tr><td>C208</td><td>SUCCESS</td><td>19,000</td></tr>
+            <tr><td>C208</td><td>SUCCESS</td><td>15,000</td></tr>
+            <tr><td>C311</td><td>SUCCESS</td><td>30,000</td></tr>
+            <tr><td>C311</td><td>SUCCESS</td><td>25,000</td></tr>
+            <tr><td>C311</td><td>FAILED</td><td>20,000</td></tr>
+            <tr><td>C415</td><td>SUCCESS</td><td>10,000</td></tr>
+            <tr><td>C415</td><td>SUCCESS</td><td>15,000</td></tr>
+            <tr><td>C415</td><td>SUCCESS</td><td>20,000</td></tr>
+          </table>
+          <p>Apply the query exactly as written. Ignore FAILED transactions. Enter the customer ID returned by the query.</p>
+        `,
+        answer:"C208",
+        placeholder:"Enter customer ID"
+      }
+    ]
+  },
+  {
+    title:"Transaction Trouble",
+    desc:"ROUND 02 • FRAUD DETECTION",
+    story:"ZERO has compromised a payment card. Trace the suspicious transaction pattern and calculate how much money remains unrecovered.",
+    tasks:[
+      {
+        question:`
+          <h2>CHALLENGE 1: IMPOSSIBLE TRAVEL DETECTION</h2>
+          <p>All transactions below belong to the same card, <b>C-778</b>. The fraud engine applies this rule:</p>
+          <div class="code">FLAG a transaction when:
+1. It is SUCCESSFUL.
+2. Its amount is greater than ₹40,000.
+3. It occurs within 10 minutes of the previous
+   successful transaction.
+4. The city is different from the previous
+   successful transaction.</div>
+          <table>
+            <tr><th>Transaction</th><th>Amount</th><th>Time</th><th>City</th><th>Status</th></tr>
+            <tr><td>TX801</td><td>₹48,000</td><td>10:02</td><td>Mumbai</td><td>SUCCESS</td></tr>
+            <tr><td>TX802</td><td>₹49,500</td><td>10:06</td><td>Mumbai</td><td>SUCCESS</td></tr>
+            <tr><td>TX803</td><td>₹47,800</td><td>10:09</td><td>Delhi</td><td>SUCCESS</td></tr>
+            <tr><td>TX804</td><td>₹1,200</td><td>11:30</td><td>Mumbai</td><td>FAILED</td></tr>
+            <tr><td>TX805</td><td>₹800</td><td>11:35</td><td>Mumbai</td><td>SUCCESS</td></tr>
+          </table>
+          <p>Compare each successful transaction with the previous successful transaction in time order. Enter the transaction ID that triggers the rule.</p>
+        `,
+        answer:"TX803",
+        placeholder:"Enter suspicious transaction ID"
+      },
+      {
+        question:`
+          <h2>CHALLENGE 2: TRACE THE UNRECOVERED FUNDS</h2>
+          <p>ZERO made three unauthorised debits. The bank reversed part of the amount and later recovered a percentage of the remaining balance.</p>
+          <table>
+            <tr><th>Operation</th><th>Type</th><th>Amount</th></tr>
+            <tr><td>01</td><td>DEBIT</td><td>₹38,500</td></tr>
+            <tr><td>02</td><td>DEBIT</td><td>₹24,750</td></tr>
+            <tr><td>03</td><td>DEBIT</td><td>₹12,000</td></tr>
+            <tr><td>04</td><td>REVERSAL</td><td>₹9,250</td></tr>
+          </table>
+          <p>The recovery team then recovered <b>40% of the balance remaining after the reversal</b>.</p>
+          <p>Calculate the amount that is still unrecovered. Enter the answer in rupees, without ₹ or commas.</p>
+        `,
+        answer:"39600",
+        placeholder:"Enter unrecovered amount"
+      }
+    ]
+  },
+  {
+    title:"Firewall Breaker",
+    desc:"ROUND 03 • CYBERSECURITY",
+    story:"ZERO has disguised a phishing domain and hidden a command in encoded data. Investigate the URL structure and decode the message.",
+    tasks:[
+      {
+        question:`
+          <h2>CHALLENGE 1: PHISHING DOMAIN ANALYSIS</h2>
+          <p>A customer receives this suspicious URL:</p>
+          <div class="code">https://bankshield.in.security-check.net/login?redirect=https%3A%2F%2Fbankshield.in</div>
+          <p>The page looks convincing because the text <b>bankshield.in</b> appears at the beginning of the hostname and again in the redirect parameter.</p>
+          <p>For this challenge, the registered domain is the final two labels of the hostname. The redirect parameter does not decide which server receives the initial connection.</p>
+          <p>Identify the registered domain of the server receiving the initial connection. Enter only the domain name.</p>
+        `,
+        answer:"security-check.net",
+        placeholder:"Enter registered domain"
+      },
+      {
+        question:`
+          <h2>CHALLENGE 2: HEXADECIMAL MESSAGE DECODER</h2>
+          <p>The firewall captured a command encoded as hexadecimal ASCII bytes:</p>
+          <div class="code">42 4C 4F 43 4B</div>
+          <p>Each pair represents one ASCII character. Convert all five hexadecimal values into their corresponding characters and combine them in order.</p>
+          <p>Enter the decoded command in capital letters.</p>
+        `,
+        answer:"BLOCK",
+        placeholder:"Enter decoded command"
+      }
+    ]
+  },
+  {
+    title:"ATM Rescue",
+    desc:"ROUND 04 • LOGIC & DEBUGGING",
+    story:"The ATM network is applying incorrect approval rules. Evaluate every condition and repair a logical flaw before more accounts are exposed.",
+    tasks:[
+      {
+        question:`
+          <h2>CHALLENGE 1: ATM RISK-BASED APPROVAL</h2>
+          <p>An ATM should approve a withdrawal only when <b>all five</b> conditions are true:</p>
+          <ol>
+            <li>Account status is ACTIVE.</li>
+            <li>Requested amount is not greater than available balance.</li>
+            <li>Today's total after withdrawal is not greater than the daily limit.</li>
+            <li>Requested amount is not greater than the per-transaction limit.</li>
+            <li>Risk score is below 70.</li>
+          </ol>
+          <table>
+            <tr><th>Parameter</th><th>Value</th></tr>
+            <tr><td>Account status</td><td>ACTIVE</td></tr>
+            <tr><td>Available balance</td><td>₹12,000</td></tr>
+            <tr><td>Already withdrawn today</td><td>₹2,250</td></tr>
+            <tr><td>New withdrawal request</td><td>₹1,800</td></tr>
+            <tr><td>Daily withdrawal limit</td><td>₹5,000</td></tr>
+            <tr><td>Per-transaction limit</td><td>₹2,000</td></tr>
+            <tr><td>Risk score</td><td>72</td></tr>
+          </table>
+          <p>Evaluate every condition, not just the balance. Enter the final decision: APPROVE or DECLINE.</p>
+        `,
+        answer:"DECLINE",
+        placeholder:"Enter ATM decision"
+      },
+      {
+        question:`
+          <h2>CHALLENGE 2: REPAIR THE LOGIN LOGIC</h2>
+          <p>The bank's policy says access must be granted only when the account is active, failed attempts are below three, <b>and</b> OTP verification is successful.</p>
+          <p>ZERO has changed one logical operator in the code:</p>
+          <div class="code">IF account_status == "ACTIVE"
+   AND failed_attempts < 3
+   OR otp_verified == TRUE:
+       access = "GRANTED"
+ELSE:
+       access = "BLOCKED"</div>
+          <p>Which single logical operator must replace <b>OR</b> so that OTP verification is mandatory along with the other two conditions?</p>
+          <p>Enter the replacement operator in capital letters.</p>
+        `,
+        answer:"AND",
+        placeholder:"Enter replacement operator"
+      }
+    ]
+  },
+  {
+    title:"The Final Vault",
+    desc:"ROUND 05 • MASTER SECURITY SYSTEM",
+    story:"The investigation is complete. ZERO has isolated the master vault behind a final multi-condition verification check.",
+    tasks:[
+      {
+        question:`
+          <h2>FINAL CHALLENGE: MASTER VAULT AUTHENTICATION</h2>
+          <p>The vault generated four authentication attempts. Only one attempt satisfies every security rule.</p>
+          <table>
+            <tr><th>Attempt</th><th>Token</th><th>Signature</th><th>Risk Score</th><th>Vault Fragment</th></tr>
+            <tr><td>V-01</td><td>VALID</td><td>MISMATCH</td><td>12</td><td>4182</td></tr>
+            <tr><td>V-02</td><td>VALID</td><td>MATCH</td><td>42</td><td>7351</td></tr>
+            <tr><td>V-03</td><td>EXPIRED</td><td>MATCH</td><td>08</td><td>2906</td></tr>
+            <tr><td>V-04</td><td>VALID</td><td>MATCH</td><td>27</td><td>8643</td></tr>
+          </table>
+          <p><b>Vault rules:</b></p>
+          <ul>
+            <li>Token must be VALID.</li>
+            <li>Signature must be MATCH.</li>
+            <li>Risk score must be 30 or below.</li>
+          </ul>
+          <p>Find the only valid attempt. Take the first two digits of its vault fragment and multiply them by the last two digits.</p>
+          <p>Enter the resulting four-digit master code.</p>
+        `,
+        answer:"3698",
+        placeholder:"Enter four-digit master code"
+      }
+    ]
+  }
+];
+
+/* =========================
+   GAME ENGINE
+========================= */
+
+let completed = [];
+let stageProgress = [0,0,0,0,0];
+let current = 0;
+let seconds = 1200;
+let gameStarted = false;
+let timerInterval = null;
+let answerLocked = false;
+let timeExpired = false;
+
+function show(id){
+  ["home","dashboard","challenge","win","timeUp"].forEach(x =>
+    document.getElementById(x).classList.add("hidden")
+  );
+  document.getElementById(id).classList.remove("hidden");
+}
+
+function updateClock(){
+  const m = Math.floor(seconds/60);
+  const s = seconds%60;
+  document.getElementById("time").textContent =
+    String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+
+function startGame(){
+  if(!gameStarted){
+    gameStarted = true;
+    timerInterval = setInterval(()=>{
+      if(seconds > 0){
+        seconds--;
+        updateClock();
+      }else{
+        clearInterval(timerInterval);
+        timeExpired = true;
+        document.getElementById("time").textContent = "TIME UP";
+        show("timeUp");
+      }
+    },1000);
+  }
+  show("dashboard");
+  renderDashboard();
+}
+
+function renderDashboard(){
+  const grid = document.getElementById("roundGrid");
+  grid.innerHTML = "";
+
+  rounds.forEach((r,i)=>{
+    const done = completed.includes(i);
+    const unlocked = i===0 || completed.includes(i-1);
+    const card = document.createElement("div");
+    card.className = "round "+(done?"completed":unlocked?"active":"locked");
+
+    card.innerHTML = `
+      <p class="tag">${done?"✓ COMPLETED":unlocked?"● UNLOCKED":"🔒 LOCKED"}</p>
+      <h3>ROUND 0${i+1}</h3>
+      <p>${r.title}</p>
+      <p class="small">${r.tasks.length} challenge(s)</p>
+      <button ${!unlocked||done?"disabled":""}>
+        ${done?"COMPLETED":unlocked?"ENTER ROUND":"LOCKED"}
+      </button>
+    `;
+
+    if(unlocked && !done){
+      card.querySelector("button").onclick = ()=>openRound(i);
+    }
+    grid.appendChild(card);
+  });
+
+  const count = completed.length;
+  document.getElementById("bar").style.width = (count*20)+"%";
+  document.getElementById("progressText").textContent =
+    count+" / 5 missions completed";
+}
+
+function openRound(i){
+  if(timeExpired) return;
+  current = i;
+  show("challenge");
+  document.getElementById("roundNumber").textContent = rounds[i].desc;
+  document.getElementById("roundTitle").textContent = rounds[i].title;
+  document.getElementById("roundDescription").textContent = rounds[i].story;
+  renderTask();
+}
+
+function renderTask(){
+  const r = rounds[current];
+  const index = stageProgress[current];
+  const task = r.tasks[index];
+
+  answerLocked = false;
+  document.getElementById("stageNumber").textContent =
+    "CHALLENGE "+(index+1);
+  document.getElementById("stageProgress").textContent =
+    (index+1)+" / "+r.tasks.length;
+  document.getElementById("question").innerHTML = task.question;
+  document.getElementById("answerArea").innerHTML = `
+    <input type="text" id="answer"
+      placeholder="${task.placeholder}"
+      autocomplete="off" spellcheck="false">
+  `;
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("submitButton").disabled = false;
+
+  const input = document.getElementById("answer");
+  input.focus();
+  input.addEventListener("keydown",e=>{
+    if(e.key==="Enter") submitAnswer();
+  });
+}
+
+function submitAnswer(){
+  if(timeExpired || answerLocked) return;
+
+  const r = rounds[current];
+  const index = stageProgress[current];
+  const task = r.tasks[index];
+  const input = document.getElementById("answer").value;
+
+  if(!input.trim()){
+    document.getElementById("feedback").textContent =
+      "Enter your response before submitting.";
+    return;
+  }
+
+  const normalize = s => s.trim().toUpperCase().replace(/\s+/g,"");
+  const response = normalize(input);
+  const expected = normalize(task.answer);
+
+  if(response === expected){
+    answerLocked = true;
+    document.getElementById("submitButton").disabled = true;
+    stageProgress[current]++;
+
+    if(stageProgress[current] === r.tasks.length){
+      completed.push(current);
+      document.getElementById("feedback").textContent =
+        "SECURITY LAYER RESTORED. NEXT MISSION UNLOCKED.";
+
+      setTimeout(()=>{
+        if(timeExpired) return;
+
+        if(completed.length === 5){
+          clearInterval(timerInterval);
+          const m = Math.floor(seconds/60);
+          const s = seconds%60;
+          document.getElementById("finalTime").textContent =
+            "Time remaining: "+m+" minutes "+s+" seconds";
+          show("win");
+        }else{
+          show("dashboard");
+          renderDashboard();
+        }
+      },1100);
+    }else{
+      document.getElementById("feedback").textContent =
+        "CHECKPOINT CLEARED. NEXT CHALLENGE UNLOCKED.";
+      setTimeout(()=>{
+        if(!timeExpired) renderTask();
+      },900);
+    }
+  }else{
+    document.getElementById("feedback").textContent =
+      "CHECKPOINT UNRESOLVED. REASSESS THE EVIDENCE AND TRY AGAIN.";
+  }
+}
+
+function backToDashboard(){
+  if(timeExpired) return;
+  show("dashboard");
+  renderDashboard();
+}
+</script>
+</body>
+</html>
